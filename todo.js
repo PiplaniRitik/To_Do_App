@@ -1,0 +1,173 @@
+var saveButton = document.getElementById("saveButton");
+    var deleteButton = document.getElementById("deleteButton");
+    var inputText = document.getElementById("inputText");
+    var taskList = document.getElementById("taskList");
+    var notice = document.getElementById("notice");
+    var tasks = []; // Array to store tasks
+    
+
+    // Fetch notes from external API
+    function fetchNotes() {
+      console.log(tasks.length);
+      return fetch('https://jsonplaceholder.typicode.com/todos')
+        .then(response => response.json())
+        .then(data => {
+          if(tasks.length!=0)
+          {
+            return;
+          }
+          else if (tasks.length==0 && Array.isArray(data)) {
+            tasks = data.map(function(note) {
+              return {
+                text: note.title,
+                id: note.id,
+                completed: note.completed
+              };
+            }
+            );
+            // renderTasks();
+            saveNotes();
+          }
+         
+           else {
+            console.error('Invalid data format received from the API');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching notes:', error);
+        });
+        
+    }
+
+    // Save notes to Local Storage
+    function saveNotes() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    // Fetch notes and render tasks when the page loads
+    window.addEventListener('load', function() {
+      var storedNotes = localStorage.getItem("tasks");
+      if (storedNotes) {
+        tasks = JSON.parse(storedNotes);
+      }
+      fetchNotes().then(fetchLocalNotes);
+      // fetchLocalNotes();
+    });
+
+    saveButton.addEventListener("click", function() {
+      var taskText = inputText.value.trim();
+      if (taskText !== "") {
+        var task = {
+          text: taskText,
+          id: tasks.length + 1,
+          completed: false
+        };
+        tasks.push(task);
+
+        renderTasks();
+        saveNotes(); // Save the updated notes to Local Storage
+
+        inputText.value = "";
+        notice.style.display = "block";
+        notice.textContent = "Task saved: " + task.text;
+      }
+    });
+
+    function deleteTask(taskId) {
+      tasks = tasks.filter(function(task) {
+        return task.id !== taskId;
+      });
+
+      renderTasks();
+      saveNotes(); // Save the updated notes to Local Storage
+    }
+
+    function editTask(taskId) {
+      var task = tasks.find(function(task) {
+        return task.id === taskId;
+      });
+
+      if (task) {
+        var taskItem = document.getElementById("task-" + taskId);
+        var taskTextElem = taskItem.querySelector(".task-text");
+        var inputElem = document.createElement("input");
+        inputElem.type = "text";
+        inputElem.value = task.text;
+
+        taskTextElem.replaceWith(inputElem);
+        inputElem.focus();
+
+        var editbut=document.getElementById("But-" + taskId);
+        var newbutele =document.createElement("button");
+        newbutele.textContent="Save";
+        newbutele.classList.add("edit-button", "btn");
+        editbut.replaceWith(newbutele);
+
+        newbutele.addEventListener("click", function(event) {
+          // if (event.keyCode === 13) { // Enter key
+            task.text = inputElem.value.trim();
+            renderTasks();
+            saveNotes(); // Save the updated notes to Local Storage
+          // }
+        });
+
+       
+      }
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = "";
+      if (Array.isArray(tasks)) {
+        tasks.forEach(function(task) {
+          var taskItem = document.createElement("div");
+          taskItem.classList.add("task-item");
+          taskItem.id = "task-" + task.id;
+
+          var taskTextElem = document.createElement("span");
+          taskTextElem.classList.add("task-text");
+          taskTextElem.textContent = task.id + ". " + task.text;
+
+          var editButton = document.createElement("button");
+          editButton.classList.add("edit-button", "btn");
+          editButton.id = "But-" + task.id;
+          editButton.textContent = "Edit";
+          editButton.addEventListener("click", function() {
+            editTask(task.id);
+          });
+
+          var deleteButton = document.createElement("button");
+          deleteButton.classList.add("delete-button", "btn");
+          deleteButton.textContent = "Delete";
+          deleteButton.addEventListener("click", function() {
+            deleteTask(task.id);
+          });
+
+          taskItem.appendChild(taskTextElem);
+          taskItem.appendChild(editButton);
+          taskItem.appendChild(deleteButton);
+          taskList.appendChild(taskItem);
+        });
+      } else {
+        console.error('Tasks array is invalid');
+      }
+    }
+
+    deleteButton.addEventListener("click", function() {
+      tasks = [];
+      renderTasks();
+      saveNotes(); // Save the updated notes to Local Storage
+    });
+
+    inputText.addEventListener("keyup", function(event) {
+      if (event.key === "Enter") { // Enter key
+        saveButton.click(); // Trigger the saveButton click event
+      }
+    });
+
+    function fetchLocalNotes() {
+      var storedNotes = localStorage.getItem("tasks");
+      if (storedNotes) {
+        tasks = JSON.parse(storedNotes);
+        renderTasks();
+      }
+    }
