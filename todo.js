@@ -3,9 +3,9 @@ var saveButton = document.getElementById("saveButton");
     var inputText = document.getElementById("inputText");
     var taskList = document.getElementById("taskList");
     var notice = document.getElementById("notice");
-    var tasks = []; // Array to store tasks
-    var count=0;
-    // Fetch notes from external API
+    var tasks = []; // Array of Objects to store tasks
+    var count=0; // To store unique id
+    // Fetch notes from external API only when tasks array is mepty
     function fetchNotes() {
       console.log(tasks.length);
       return fetch('https://jsonplaceholder.typicode.com/todos')
@@ -39,7 +39,7 @@ var saveButton = document.getElementById("saveButton");
         
     }
 
-    // Save notes to Local Storage
+    // Save notes to Local Storage and count as well for unique id
     function saveNotes() {
       localStorage.setItem("tasks", JSON.stringify(tasks));
       localStorage.setItem("count",JSON.stringify(count));
@@ -54,7 +54,7 @@ var saveButton = document.getElementById("saveButton");
         count = JSON.parse(storedCount);
       }
       fetchNotes().then(fetchLocalNotes);
-      // fetchLocalNotes();
+     
     });
 
     saveButton.addEventListener("click", function() {
@@ -68,7 +68,7 @@ var saveButton = document.getElementById("saveButton");
         tasks.push(task);
 
         renderTasks();
-        saveNotes(); // Save the updated notes to Local Storage
+        saveNotes(); 
 
         inputText.value = "";
         notice.style.display = "block";
@@ -82,7 +82,7 @@ var saveButton = document.getElementById("saveButton");
       });
 
       renderTasks();
-      saveNotes(); // Save the updated notes to Local Storage
+      saveNotes(); 
     }
 
     function editTask(taskId) {
@@ -113,11 +113,11 @@ var saveButton = document.getElementById("saveButton");
          
             task.text = inputElem.value.trim();
             renderTasks();
-            saveNotes(); // Save the updated notes to Local Storage
+            saveNotes();
           }
         );
         inputElem.addEventListener("keydown", function(event) {
-          if (event.key === "Enter") { // Enter key
+          if (event.key === "Enter") { 
             
             newbutele.click();
           }
@@ -170,12 +170,12 @@ var saveButton = document.getElementById("saveButton");
     deleteButton.addEventListener("click", function() {
       tasks = [];
       renderTasks();
-      saveNotes(); // Save the updated notes to Local Storage
+      saveNotes(); 
     });
 
     inputText.addEventListener("keyup", function(event) {
-      if (event.key === "Enter") { // Enter key
-        saveButton.click(); // Trigger the saveButton click event
+      if (event.key === "Enter") { 
+        saveButton.click(); 
       }
     });
 
