@@ -20,7 +20,7 @@ var saveButton = document.getElementById("saveButton");
               return {
                 text: note.title,
                 id: note.id,
-                completed: note.completed
+                // completed: note.completed
               };
             }
             );
@@ -63,7 +63,7 @@ var saveButton = document.getElementById("saveButton");
         var task = {
           text: taskText,
           id: ++count,
-          completed: false
+          // completed: false
         };
         tasks.push(task);
 
@@ -103,16 +103,28 @@ var saveButton = document.getElementById("saveButton");
         var editbut=document.getElementById("But-" + taskId);
         var newbutele =document.createElement("button");
         newbutele.textContent="Save";
-        newbutele.classList.add("edit-button", "btn");
+        newbutele.classList.add("btn");
         editbut.replaceWith(newbutele);
 
+       
+
+
         newbutele.addEventListener("click", function(event) {
-          // if (event.keyCode === 13) { // Enter key
+         
             task.text = inputElem.value.trim();
             renderTasks();
             saveNotes(); // Save the updated notes to Local Storage
-          // }
+          }
+        );
+        inputElem.addEventListener("keydown", function(event) {
+          if (event.key === "Enter") { // Enter key
+            
+            newbutele.click();
+          }
         });
+
+        
+        
 
        
       }
