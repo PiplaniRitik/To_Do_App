@@ -4,8 +4,7 @@ var saveButton = document.getElementById("saveButton");
     var taskList = document.getElementById("taskList");
     var notice = document.getElementById("notice");
     var tasks = []; // Array to store tasks
-    
-
+    var count=0;
     // Fetch notes from external API
     function fetchNotes() {
       console.log(tasks.length);
@@ -26,6 +25,7 @@ var saveButton = document.getElementById("saveButton");
             }
             );
             // renderTasks();
+            count=tasks.length;
             saveNotes();
           }
          
@@ -42,13 +42,16 @@ var saveButton = document.getElementById("saveButton");
     // Save notes to Local Storage
     function saveNotes() {
       localStorage.setItem("tasks", JSON.stringify(tasks));
+      localStorage.setItem("count",JSON.stringify(count));
     }
 
     // Fetch notes and render tasks when the page loads
     window.addEventListener('load', function() {
       var storedNotes = localStorage.getItem("tasks");
+      var storedCount = localStorage.getItem("count");
       if (storedNotes) {
         tasks = JSON.parse(storedNotes);
+        count = JSON.parse(storedCount);
       }
       fetchNotes().then(fetchLocalNotes);
       // fetchLocalNotes();
@@ -59,7 +62,7 @@ var saveButton = document.getElementById("saveButton");
       if (taskText !== "") {
         var task = {
           text: taskText,
-          id: tasks.length + 1,
+          id: ++count,
           completed: false
         };
         tasks.push(task);
