@@ -4,8 +4,12 @@ var saveButton = document.getElementById("saveButton");
     var taskList = document.getElementById("taskList");
     var notice = document.getElementById("notice");
     var tasks = []; // Array of Objects to store tasks
-    var count=0; // To store unique id
+    var count=0; // To store unique id for every note
+    // ((IMPORTANT TO NOTE THAT TO GENERATE UNIQUE ID EVERY TIME WE USED A COUNTER))
+
     // Fetch notes from external API only when tasks array is mepty
+    
+    // ((IMPORTANT TO NOTE THAT NOTES WILL BE FFETCHED FROM API ONLY WHEN THE LOCAL STORAGE IS EMPTY))
     function fetchNotes() {
       console.log(tasks.length);
       return fetch('https://jsonplaceholder.typicode.com/todos')
@@ -96,6 +100,7 @@ var saveButton = document.getElementById("saveButton");
         var inputElem = document.createElement("input");
         inputElem.type = "text";
         inputElem.value = task.text;
+        inputElem.style.width="100%";
 
         taskTextElem.replaceWith(inputElem);
         inputElem.focus();
