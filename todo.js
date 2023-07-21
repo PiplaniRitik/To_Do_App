@@ -75,7 +75,7 @@ var saveButton = document.getElementById("saveButton");
         saveNotes(); 
 
         inputText.value = "";
-        notice.style.display = "block";
+        // notice.style.display = "block";
         notice.textContent = "Task saved: " + task.text;
       }
     });
