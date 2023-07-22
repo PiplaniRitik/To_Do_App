@@ -219,7 +219,7 @@ function drop(event) {
       const currentDate=new Date();
         const blmatch = !showBacklogs || (showBacklogs && !task.done && dueDate < currentDate);
 
-        const searching = !searchTerm || task.title.toLowerCase() === searchTerm || (task.subtasks.some((subtask) => subtask.title.toLowerCase().includes(searchTerm))) || task.title.toLowerCase().includes(searchTerm) || task.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
+        const searching = !searchTerm || task.content.toLowerCase().includes(searchTerm) || task.title.toLowerCase() === searchTerm || (task.subtasks.some((subtask) => subtask.title.toLowerCase().includes(searchTerm))) || task.title.toLowerCase().includes(searchTerm) || task.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
 
         return searching && blmatch && dueDateMatch && categoryMatch && priorityMatch;
       });
