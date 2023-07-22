@@ -16,19 +16,76 @@
         </h1>
     </span>
         <!-- <h3 style="margin-right: 40px;"></h3> -->
-        
-        
+        <button class="btn" id="activityLogButton">Activity Log</button>
+        <button class="btn" id="homeButton">Home</button>
     </div>
+    <div id="logss">
+
+    </div>
+    <div id="to_hide">
     <div id="container">
         
-        <input type="text" id="inputText" placeholder="Enter a task">
+        <!-- <input type="text" id="inputText" placeholder="Enter a task"> -->
+        <input type="text" id="taskTitle" placeholder="Enter task title">
+        <input type="text" id="taskContent" placeholder="Enter task content">
+        <input type="text" id="inputTags" placeholder="Enter tags (comma-separated)">
+        <input type="date" value="" id="dueDate">
+        <select id="category">
+          <option value="personal">Personal</option>
+          <option value="work">Work</option>
+          <option value="other">Other</option>
+        </select>
+        <select id="priority">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
         <button class="btn" id="saveButton">Save</button>
         <button class="btn" id="deleteButton">Delete All</button>
       </div>
-    
+
+      <div>
+        <h2>Filters:</h2>
+        <label for="filterDueDate">Due Date Range:</label>
+        <input type="date" id="filterDueDateStart" placeholder="Start Date">
+        <input type="date" id="filterDueDateEnd" placeholder="End Date">
+        <br>
+        <label for="filterCategory">Filter by Category:</label>
+        <select id="filterCategory">
+          <option value="">All Categories</option>
+          <option value="personal">Personal</option>
+          <option value="work">Work</option>
+          <option value="other">Other</option>
+        </select>
+        <br>
+        <label for="filterPriority">Filter by Priority:</label>
+        <select id="filterPriority">
+          <option value="">All Priorities</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="showBacklogs">Show Backlogs</label>
+        <input type="checkbox" id="showBacklogs">
+      </div>
+
+      <div>
+        <label for="sortBy">Sort By:</label>
+        <select id="sortBy">
+            <option value="">All Options</option>
+          <option value="dueDate">Due Date</option>
+          <option value="priority">Priority</option>
+          <!-- Add more options for other sorting criteria as needed -->
+        </select>
+      </div>
+      
       <div id="taskList" class="task-list"></div>
     
       <div id="notice"></div>
       <script src="todo.js"></script>
+    </div>
 </body>
 </html>

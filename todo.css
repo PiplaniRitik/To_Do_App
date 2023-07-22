@@ -19,6 +19,16 @@
     background-image: url('./images/deadline.jfif'); */
    
   }
+  #logss{
+    display: none;
+    white-space: pre-wrap;
+  }
+  .high-priority {
+    border: 2px solid red;
+  }
+  .high-priority .reminder {
+    color: red;
+  }
   h1{
     font-size: 28px;
     font-family:'Ubuntu',sans-serif;
@@ -27,7 +37,7 @@
     font-size: 16px;
     font-family:'Ubuntu',sans-serif;
   }
-  #inputText {
+  #taskTitle, #taskContent {
     font-size: 28px;
     font-family: 'Ubuntu',sans-serif;
     flex: 1;
@@ -74,6 +84,7 @@
     overflow: hidden;
     font-size: 16px;
     font-family: 'Ubuntu',sans-serif;
+    white-space: pre-wrap;
   }
   
   .delete-button {
