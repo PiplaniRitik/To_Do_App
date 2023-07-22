@@ -15,8 +15,16 @@ var saveButton = document.getElementById("saveButton");
   const sortBy = document.getElementById("sortBy");
   const showBacklogs = document.getElementById("showBacklogs");
   var inputTags = document.getElementById("inputTags");
+  
     var tasks = []; // Array of Objects to store tasks
     var count=0; // To store unique id for every note
+    const searchInput=document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+searchButton.addEventListener("click", function() {
+  // const searchInput = document.getElementById("searchInput").value.trim().toLowerCase();
+  // filteredTasks = searchTasks(searchInput);
+  renderTasks();
+});
 
     var activityLogButton = document.getElementById("activityLogButton");
 
@@ -163,6 +171,9 @@ function drop(event) {
     sortBy.addEventListener("change", () => {
       renderTasks();
     });
+    searchInput.addEventListener("input", () => {
+      renderTasks();
+    });
 
     showBacklogs.addEventListener("change", () => {
       renderTasks();
@@ -193,7 +204,7 @@ function drop(event) {
       const filterCategory = document.getElementById("filterCategory").value;
       const filterPriority = document.getElementById("filterPriority").value;
       const showBacklogs = document.getElementById("showBacklogs").checked;
-      
+      const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
       //   return (showBacklogs && !task.done && dueDate < currentDate);
     
       const filteredTasks = tasks.filter((task) => {
@@ -208,7 +219,9 @@ function drop(event) {
       const currentDate=new Date();
         const blmatch = !showBacklogs || (showBacklogs && !task.done && dueDate < currentDate);
 
-        return blmatch && dueDateMatch && categoryMatch && priorityMatch;
+        const searching = !searchTerm || task.title.toLowerCase() === searchTerm || (task.subtasks.some((subtask) => subtask.title.toLowerCase().includes(searchTerm))) || task.title.toLowerCase().includes(searchTerm) || task.tags.some((tag) => tag.toLowerCase().includes(searchTerm))
+
+        return searching && blmatch && dueDateMatch && categoryMatch && priorityMatch;
       });
     
       return filteredTasks;
