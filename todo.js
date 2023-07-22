@@ -69,7 +69,7 @@ var saveButton = document.getElementById("saveButton");
   
   function logActivity(activity) {
     const activityLogs = getFromLocalStorage("activityLogs") || [];
-    activityLogs.push(activity);
+    activityLogs.push(activity+"  "+new Date().toLocaleString());
     saveToLocalStorage("activityLogs", activityLogs);
   }
   
@@ -217,15 +217,15 @@ function drop(event) {
     saveButton.addEventListener("click", () => {
       const title = taskTitle.value.trim();
       const content=taskContent.value.trim();
-      // let date="";
-      // if(dueDate.value!=""){
-      // date = dueDate.value;
-      // }
-      // else{
-      //   date = parseDueDateFromText(content);
-      // }
+      let date="";
+      if(dueDate.value!=""){
+      date = dueDate.value;
+      }
+      else{
+        date = parseDueDateFromText(content);
+      }
       var tags = inputTags.value.trim();
-      const date= dueDate.value;
+      // const date= dueDate.value;
       const cat = category.value;
       const prio = priority.value;
 
@@ -241,6 +241,7 @@ function drop(event) {
           done: false,
           id: ++count,
           tags: tags.split(",").map(tag => tag.trim()),
+          subtasks: [],
         };
 
         tasks.push(newTask);
@@ -271,65 +272,280 @@ function drop(event) {
       saveNotes(); 
     }
 
-    function editTask(taskId) {
-      var task = tasks.find(function(task) {
-        return task.id === taskId;
+    // function editTask(taskId) {
+    //   var task = tasks.find(function(task) {
+    //     return task.id === taskId;
+    //   });
+
+    //   if (task) {
+    //     var taskItem = document.getElementById("task-" + taskId);
+    //     var taskTextElem = taskItem.querySelector(".task-text");
+    //     var inputElem = document.createElement("input");
+    //     inputElem.type = "text";
+    //     inputElem.value = task.text;
+    //     inputElem.style.width="100%";
+
+    //     taskTextElem.replaceWith(inputElem);
+    //     inputElem.focus();
+
+    //     var editbut=document.getElementById("But-" + taskId);
+    //     var newbutele =document.createElement("button");
+    //     newbutele.textContent="Save";
+    //     newbutele.classList.add("btn");
+    //     editbut.replaceWith(newbutele);
+
+       
+
+
+    //     newbutele.addEventListener("click", function(event) {
+         
+    //         task.text = inputElem.value.trim();
+    //         renderTasks();
+    //         saveNotes();
+    //       }
+    //     );
+    //     inputElem.addEventListener("keydown", function(event) {
+    //       if (event.key === "Enter") { 
+            
+    //         newbutele.click();
+    //       }
+    //     });
+
+        
+        
+
+       
+    //   }
+    // }
+
+    function showEditForm(task) {
+      // Create a form element
+      const form = document.createElement("form");
+    
+      // Create input fields for editing task attributes
+      const titleInput = createInputField("text", "title", "Task Title", task.title);
+      const dueDateInput = createInputField("date", "dueDate", "Due Date", task.dueDate);
+      const categoryInput = createInputField("text", "category", "Category", task.category);
+      const priorityInput = createInputField("text", "priority", "Priority (low, medium, high)", task.priority);
+      const contentInput = createInputField("text", "content", "Task Content", task.content);
+      // Create a submit button
+      const submitButton = document.createElement("button");
+      submitButton.type = "button";
+      submitButton.textContent = "Save";
+      submitButton.classList.add("btn");
+      submitButton.addEventListener("click", function() {
+        editTask(task.id, form); // Call the editTask() function when the submit button is clicked
+      });
+    
+      // Add input fields and submit button to the form
+      form.appendChild(titleInput);
+      form.appendChild(contentInput);
+      form.appendChild(dueDateInput);
+      form.appendChild(categoryInput);
+      form.appendChild(priorityInput);
+      form.appendChild(submitButton);
+    
+      // Clear the taskList and append the form to display it
+      taskList.innerHTML = "";
+      taskList.appendChild(form);
+    }
+    function createInputField(type, name, placeholder, value) {
+      const input = document.createElement("input");
+      input.type = type;
+      input.name = name;
+      input.placeholder = placeholder;
+      input.value = value;
+      input.classList.add("form-input");
+      return input;
+    }
+    function editTask(taskId, form) {
+      const task = tasks.find((task) => task.id === taskId);
+    
+      // Update the task object with the edited values from the form input fields
+      task.title = form.title.value;
+      task.dueDate = form.dueDate.value;
+      task.category = form.category.value;
+      task.priority = form.priority.value;
+      task.content = form.content.value;
+    
+      saveNotes(); // Save the updated tasks to Local Storage
+    
+      // Recreate the task item with the updated details
+      const taskItem = document.createElement("div");
+      // ... Existing code to create the taskItem ...
+      // You can reuse the same code that you used in the renderTasks() function to create the taskItem
+    
+      // Replace the form with the updated task item in the task list
+      taskItem.classList.add("task-item");
+      taskItem.id = "task-" + task.id;
+      taskItem.draggable="true";
+      taskItem.addEventListener("dragstart", dragStart);
+      taskItem.addEventListener("dragover", dragOver);
+      taskItem.addEventListener("drop", drop);
+
+      if (task.priority === "high") {
+        taskItem.classList.add("high-priority");
+        // Create and append the reminder text
+        const reminderText = document.createElement("div");
+        reminderText.textContent = "Important";
+        reminderText.classList.add("reminder");
+        taskItem.appendChild(reminderText);
+
+        setTimeout(() => {
+          taskItem.removeChild(reminderText);
+        }, 5000);
+      }
+      if(task.subtasks){
+      // Create a div to display subtasks
+const subtaskList = document.createElement("div");
+subtaskList.classList.add("subtask-list");
+
+// Loop through the subtasks and add them to the subtaskList
+task.subtasks.forEach(function (subtask) {
+  const subtaskItem = document.createElement("div");
+  subtaskItem.classList.add("subtask-item");
+
+  const subtaskTextElem = document.createElement("div");
+  subtaskTextElem.textContent = subtask.title;
+  subtaskTextElem.classList.add("subtask-text");
+
+  const subtaskCheckbox = document.createElement("input");
+  subtaskCheckbox.type = "checkbox";
+  subtaskCheckbox.checked = subtask.done;
+  subtaskCheckbox.addEventListener("change", () => {
+    subtask.done = subtaskCheckbox.checked;
+    saveNotes();
+    renderTasks();
+  });
+
+  subtaskItem.appendChild(subtaskCheckbox);
+  subtaskItem.appendChild(subtaskTextElem);
+  subtaskList.appendChild(subtaskItem);
+});
+taskItem.appendChild(subtaskList);
+}
+
+//   const addSubtaskButton = document.getElementById("addSubtaskButton");
+// const subtaskTitleInput = document.getElementById("subtaskTitleInput");
+var subTaskInput = document.createElement("input");
+subTaskInput.type="text";
+subTaskInput.placeholder="Enter subtask";
+var addSubtaskButton = document.createElement("button");
+addSubtaskButton.classList.add("subTask-button", "btn");
+// editButton.id = "But-" + task.id;
+addSubtaskButton.textContent = "Add SubTask";
+
+addSubtaskButton.addEventListener("click", function() {
+
+const subtaskTitle = subTaskInput.value.trim();
+
+if (subtaskTitle !== "") {
+addSubtask(task.id, subtaskTitle);
+subTaskInput.value = ""; // Clear the input field after adding the subtask
+}
+});
+
+      if (task.tags && task.tags.length > 0) {
+        const tagsContainer = document.createElement("div");
+        tagsContainer.classList.add("tags");
+        task.tags.forEach(tag => {
+          const tagElem = document.createElement("span");
+          tagElem.textContent = tag;
+          tagsContainer.appendChild(tagElem);
+        });
+        taskItem.appendChild(tagsContainer);
+      }
+
+      var taskTextElem = document.createElement("div");
+      taskTextElem.classList.add("task-text");
+      taskTextElem.textContent = task.id + ". " + `${task.title} - Due: ${task.dueDate} - Category: ${task.category} - Priority: ${task.priority} \n ${task.content}`;
+
+      // var editButton = document.createElement("button");
+      // editButton.classList.add("edit-button", "btn");
+      // editButton.id = "But-" + task.id;
+      // editButton.textContent = "Edit";
+      // editButton.addEventListener("click", function() {
+      //   editTask(task.id);
+      // });
+
+      const editButton = document.createElement("button");
+editButton.textContent = "Edit";
+editButton.classList.add("edit-button", "btn");
+editButton.addEventListener("click", function() {
+  showEditForm(task); // Call the showEditForm() function when the button is clicked
+});
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = task.done;
+      checkbox.addEventListener("change", () => {
+        task.done = checkbox.checked;
+        renderTasks();
+        saveNotes();
       });
 
-      if (task) {
-        var taskItem = document.getElementById("task-" + taskId);
-        var taskTextElem = taskItem.querySelector(".task-text");
-        var inputElem = document.createElement("input");
-        inputElem.type = "text";
-        inputElem.value = task.text;
-        inputElem.style.width="100%";
+      var deleteButton = document.createElement("button");
+      deleteButton.classList.add("delete-button", "btn");
+      deleteButton.textContent = "Delete";
+      deleteButton.addEventListener("click", function() {
+        deleteTask(task.id);
+      });
 
-        taskTextElem.replaceWith(inputElem);
-        inputElem.focus();
+      
 
-        var editbut=document.getElementById("But-" + taskId);
-        var newbutele =document.createElement("button");
-        newbutele.textContent="Save";
-        newbutele.classList.add("btn");
-        editbut.replaceWith(newbutele);
+      taskItem.appendChild(taskTextElem);
 
-       
-
-
-        newbutele.addEventListener("click", function(event) {
-         
-            task.text = inputElem.value.trim();
-            renderTasks();
-            saveNotes();
-          }
-        );
-        inputElem.addEventListener("keydown", function(event) {
-          if (event.key === "Enter") { 
+      taskItem.appendChild(editButton);
+      taskItem.appendChild(checkbox);
+     
+      taskItem.appendChild(subTaskInput);
+      taskItem.appendChild(addSubtaskButton);
+      taskItem.appendChild(deleteButton);
+      form.replaceWith(taskItem);
+    
+      // Re-render the tasks to update the UI
+      renderTasks();
+    }
             
-            newbutele.click();
-          }
-        });
-
-        
-        
-
+    function parseDueDateFromText(text) {
+      // Match the text for date patterns like "tomorrow" or "13th Jan 2023 3 pm"
+      // const dateRegex = /(?:tomorrow|(\d{1,2}(?:th|st|nd)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}(?:\s+\d{1,2}:\d{2}\s+(?:am|pm))?)|(?:\d{1,2}:\d{2}\s+(?:am|pm)))/i;
+      // const match = text.match(dateRegex);
+    
+      // if (match && match[0]) {
+      //   // Parse the matched date and return it as the due date
+      //   console.log(match[0]);
+      //   const parsedDate = new Date(match[0]);
+      //   return parsedDate.toISOString();
+      // }
+    
+      // // Return null if no date is found in the text
+      // return "";
+      // console.log(text);
+      // const dueDatePattern = /(today|by|due|on|before|at)(\s+)(\d{1,2}(st|nd|rd|th)?(\s+\w+)?(\s+\d{4})?(\s+\d{1,2}:\d{2}(\s+AM|PM)?)?)/i;
+      const dueDatePattern = /(?:tomorrow|today|yesterday|Tomorrow|Today|Yesterday(\d{1,2}(?:th|st|nd)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}(?:\s+\d{1,2}:\d{2}\s+(?:am|pm))?)|(?:\d{1,2}:\d{2}\s+(?:am|pm)))/i;
+      const dueDateMatch = text.match(dueDatePattern);
+      console.log(dueDateMatch);
+      if (dueDateMatch) {
+        // Extract the due date text from the input
+        const dueDateText = dueDateMatch[0];
+        const d=new Date();
        
+        if (dueDateText.toLowerCase().includes("tomorrow")) {
+          return ` ${d.getFullYear()}-0${d.getMonth()+1}-${d.getDate()+1}`;
+        } else if (dueDateText.toLowerCase().includes("today")) {
+          return ` ${d.getFullYear()}-0${d.getMonth()+1}-${d.getDate()}`;
+        } else if(dueDateText.toLowerCase().includes("yesterday")){
+          // If none of the keywords found, use the original due date text as is
+          return ` ${d.getFullYear()}-0${d.getMonth()+1}-${d.getDate()-1}`;
+        } else{
+          return dueDateText;
+        }
+      }
+      else{
+        return "";
       }
     }
-    // function parseDueDateFromText(text) {
-    //   // Match the text for date patterns like "tomorrow" or "13th Jan 2023 3 pm"
-    //   const dateRegex = /(?:tomorrow|(\d{1,2}(?:th|st|nd)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}(?:\s+\d{1,2}:\d{2}\s+(?:am|pm))?)|(?:\d{1,2}:\d{2}\s+(?:am|pm)))/i;
-    //   const match = text.match(dateRegex);
-    
-    //   if (match && match[0]) {
-    //     // Parse the matched date and return it as the due date
-    //     const parsedDate = new Date(match[0]);
-    //     return parsedDate.toISOString();
-    //   }
-    
-    //   // Return null if no date is found in the text
-    //   return "";
-    // }
     
     
 
@@ -374,6 +590,26 @@ function drop(event) {
 // }
 
 //     setupReminders(); 
+
+
+function generateUniqueId() {
+  // Function to generate a unique ID using the current timestamp
+  return Date.now().toString(36);
+}
+
+function addSubtask(taskId, subtaskTitle) {
+  const task = tasks.find((task) => task.id === taskId);
+  if (task) {
+    const subtask = {
+      id: generateUniqueId(), // You need to implement a function to generate unique IDs
+      title: subtaskTitle,
+      done: false
+    };
+    task.subtasks.push(subtask);
+    saveNotes(); // Save the updated tasks to Local Storage
+    renderTasks(); // Re-render the tasks to update the UI
+  }
+}
 
     function renderTasks() {
       taskList.innerHTML = "";
@@ -420,6 +656,55 @@ function drop(event) {
               taskItem.removeChild(reminderText);
             }, 5000);
           }
+          if(task.subtasks){
+          // Create a div to display subtasks
+    const subtaskList = document.createElement("div");
+    subtaskList.classList.add("subtask-list");
+
+    // Loop through the subtasks and add them to the subtaskList
+    task.subtasks.forEach(function (subtask) {
+      const subtaskItem = document.createElement("div");
+      subtaskItem.classList.add("subtask-item");
+
+      const subtaskTextElem = document.createElement("div");
+      subtaskTextElem.textContent = subtask.title;
+      subtaskTextElem.classList.add("subtask-text");
+
+      const subtaskCheckbox = document.createElement("input");
+      subtaskCheckbox.type = "checkbox";
+      subtaskCheckbox.checked = subtask.done;
+      subtaskCheckbox.addEventListener("change", () => {
+        subtask.done = subtaskCheckbox.checked;
+        saveNotes();
+        renderTasks();
+      });
+
+      subtaskItem.appendChild(subtaskCheckbox);
+      subtaskItem.appendChild(subtaskTextElem);
+      subtaskList.appendChild(subtaskItem);
+    });
+    taskItem.appendChild(subtaskList);
+  }
+
+//   const addSubtaskButton = document.getElementById("addSubtaskButton");
+// const subtaskTitleInput = document.getElementById("subtaskTitleInput");
+var subTaskInput = document.createElement("input");
+subTaskInput.type="text";
+subTaskInput.placeholder="Enter subtask";
+var addSubtaskButton = document.createElement("button");
+addSubtaskButton.classList.add("subTask-button", "btn");
+// editButton.id = "But-" + task.id;
+addSubtaskButton.textContent = "Add SubTask";
+
+addSubtaskButton.addEventListener("click", function() {
+  
+  const subtaskTitle = subTaskInput.value.trim();
+
+  if (subtaskTitle !== "") {
+    addSubtask(task.id, subtaskTitle);
+    subTaskInput.value = ""; // Clear the input field after adding the subtask
+  }
+});
 
           if (task.tags && task.tags.length > 0) {
             const tagsContainer = document.createElement("div");
@@ -436,13 +721,20 @@ function drop(event) {
           taskTextElem.classList.add("task-text");
           taskTextElem.textContent = task.id + ". " + `${task.title} - Due: ${task.dueDate} - Category: ${task.category} - Priority: ${task.priority} \n ${task.content}`;
 
-          var editButton = document.createElement("button");
-          editButton.classList.add("edit-button", "btn");
-          editButton.id = "But-" + task.id;
-          editButton.textContent = "Edit";
-          editButton.addEventListener("click", function() {
-            editTask(task.id);
-          });
+          // var editButton = document.createElement("button");
+          // editButton.classList.add("edit-button", "btn");
+          // editButton.id = "But-" + task.id;
+          // editButton.textContent = "Edit";
+          // editButton.addEventListener("click", function() {
+          //   editTask(task.id);
+          // });
+
+          const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.classList.add("edit-button", "btn");
+    editButton.addEventListener("click", function() {
+      showEditForm(task); // Call the showEditForm() function when the button is clicked
+    });
 
           const checkbox = document.createElement("input");
           checkbox.type = "checkbox";
@@ -460,9 +752,15 @@ function drop(event) {
             deleteTask(task.id);
           });
 
+          
+
           taskItem.appendChild(taskTextElem);
+
           taskItem.appendChild(editButton);
           taskItem.appendChild(checkbox);
+         
+          taskItem.appendChild(subTaskInput);
+          taskItem.appendChild(addSubtaskButton);
           taskItem.appendChild(deleteButton);
           taskList.appendChild(taskItem);
         });
