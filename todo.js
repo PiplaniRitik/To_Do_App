@@ -215,10 +215,10 @@ function applyFilters() {
 // Save Button Event Listener
 
 saveButton.addEventListener("click", () => {
-//   const contt = document.getElementById("container");
-// const adding_task = document.getElementById("abc");
-//   contt.style.display="none";
-//   adding_task.style.display="flex";
+  const contt = document.getElementById("container");
+const adding_task = document.getElementById("abc");
+  contt.style.display="none";
+  adding_task.style.display="flex";
   const title = taskTitle.value.trim();
   const content = taskContent.value.trim();
   let date = "";
@@ -740,6 +740,10 @@ function renderTasks() {
 //delete all function
 
 deleteButton.addEventListener("click", function () {
+  const contt = document.getElementById("container");
+  const adding_task = document.getElementById("abc");
+    contt.style.display="none";
+    adding_task.style.display="flex";
   tasks = [];
   count = 0;
   renderTasks();

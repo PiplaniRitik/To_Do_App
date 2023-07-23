@@ -1,5 +1,5 @@
 #container {
-    display: flex;
+    /* display: flex; */
     align-items: center;
     margin-bottom: 10px;
     margin-top: 10px;
@@ -9,15 +9,17 @@
     top:0px;
     background-color:#829cfa;
     padding:10px;
-    /* display:none; */
+    display:none;
   }
   .for_adding_task{
     align-items: center;
-    display: none;
+    display: flex;
     justify-content: center;
     position:sticky;
     top:0px;
     margin-top: 10px;
+    background-color: #F5F5DC;
+    padding:10px;
   }
   .head{
     width:100%; 
