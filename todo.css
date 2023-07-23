@@ -4,7 +4,20 @@
     margin-bottom: 10px;
     margin-top: 10px;
     flex-wrap: wrap;
-    flex-direction: column;;
+    flex-direction: column;
+    position:sticky;
+    top:0px;
+    background-color:#829cfa;
+    padding:10px;
+    /* display:none; */
+  }
+  .for_adding_task{
+    align-items: center;
+    display: none;
+    justify-content: center;
+    position:sticky;
+    top:0px;
+    margin-top: 10px;
   }
   .head{
     width:100%; 

@@ -15,6 +15,14 @@ const filterPriority = document.getElementById("filterPriority");
 const sortBy = document.getElementById("sortBy");
 const showBacklogs = document.getElementById("showBacklogs");
 const inputTags = document.getElementById("inputTags");
+const addbut = document.getElementById("to_add");
+
+addbut.addEventListener('click',function (){
+  const contt = document.getElementById("container");
+const adding_task = document.getElementById("abc");
+  contt.style.display="flex";
+  adding_task.style.display="none";
+});
 
 var tasks = []; // Array of Objects to store tasks
 var count = 0; // To store unique id for every task
@@ -207,6 +215,10 @@ function applyFilters() {
 // Save Button Event Listener
 
 saveButton.addEventListener("click", () => {
+//   const contt = document.getElementById("container");
+// const adding_task = document.getElementById("abc");
+//   contt.style.display="none";
+//   adding_task.style.display="flex";
   const title = taskTitle.value.trim();
   const content = taskContent.value.trim();
   let date = "";
@@ -249,6 +261,7 @@ saveButton.addEventListener("click", () => {
     priority.value = "low";
 
   }
+  
 });
 
 // Delete function using task Id
