@@ -529,6 +529,8 @@ function addSubtask(taskId, subtaskTitle) {
 function renderTasks() {
   taskList.innerHTML = "";
   const headed=document.createElement("h1");
+  headed.style.width="100%";
+  headed.style.backgroundColor="#19f7e1"
   headed.textContent="TASKS";
   headed.style.alignSelf="center";
   taskList.appendChild(headed);
@@ -648,7 +650,7 @@ function renderTasks() {
 
       var taskTextElem = document.createElement("div");
       taskTextElem.classList.add("task-text");
-      taskTextElem.textContent = task.id + ". " + `${task.title}                                                                                                                                                                                                                                                                    DueDate: ${task.dueDate}         Category: ${task.category}       Priority: ${task.priority}\n`;
+      taskTextElem.textContent = task.id + ". " + `Title: ${task.title}                                                                                                                                                                                                                                                             DueDate: ${task.dueDate}         Category: ${task.category}       Priority: ${task.priority}\n`;
 
       //display taskcontent
       let check_content = document.createElement("div");
@@ -697,13 +699,24 @@ function renderTasks() {
       // taskItem.appendChild(checkbox);
       taskItem.appendChild(check_content);
       taskItem.appendChild(subtaskList);
-      taskItem.appendChild(subTaskInput);
-      taskItem.appendChild(addSubtaskButton);
-      taskItem.appendChild(editButton);
-      
 
-    
-      taskItem.appendChild(deleteButton);
+      let subtaskfield = document.createElement("div");
+      subtaskfield.style.display = "flex";
+      subtaskfield.style.marginTop = "10px";
+      subtaskfield.style.marginBottom = "10px";
+      subtaskfield.style.marginLeft = "20px";
+      subtaskfield.appendChild(subTaskInput);
+      subtaskfield.appendChild(addSubtaskButton);
+      taskItem.appendChild(subtaskfield);
+
+      let edit_delete = document.createElement("div");
+      edit_delete.style.display = "flex";
+      edit_delete.style.marginTop = "10px";
+      edit_delete.style.alignSelf = "end";
+      edit_delete.appendChild(editButton);    
+      edit_delete.appendChild(deleteButton);
+      taskItem.appendChild(edit_delete);
+      
       taskList.appendChild(taskItem);
     });
   } else {
