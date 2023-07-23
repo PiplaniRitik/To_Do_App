@@ -24,6 +24,7 @@ var count = 0; // To store unique id for every task
 const searchInput = document.getElementById("searchInput");
 const searchButton = document.getElementById("searchButton");
 searchButton.addEventListener("click", function () {
+  logActivity(`Searched for: ${searchInput.value}`);
   renderTasks();
 });
 
@@ -281,6 +282,7 @@ function showEditForm(task) {
   submitButton.textContent = "Save";
   submitButton.classList.add("btn");
   submitButton.addEventListener("click", function () {
+    logActivity(`Edited task: ${task.title}`);
     editTask(task.id, form); 
   });
 
@@ -294,6 +296,10 @@ function showEditForm(task) {
 
   
   taskList.innerHTML = "";
+  const headed=document.createElement("h1");
+  headed.textContent="TASKS";
+  headed.style.alignSelf="center";
+  taskList.appendChild(headed);
   taskList.appendChild(form);
 }
 function createInputField(type, name, placeholder, value) {
@@ -388,6 +394,7 @@ function editTask(taskId, form) {
       addSubtask(task.id, subtaskTitle);
       subTaskInput.value = ""; 
     }
+    logActivity(`Added subtask to task: ${task.title}`);
   });
 
   // Tags
@@ -521,6 +528,10 @@ function addSubtask(taskId, subtaskTitle) {
 
 function renderTasks() {
   taskList.innerHTML = "";
+  const headed=document.createElement("h1");
+  headed.textContent="TASKS";
+  headed.style.alignSelf="center";
+  taskList.appendChild(headed);
 
   //Filtering
 
@@ -565,12 +576,14 @@ function renderTasks() {
       }
 
       //display subtasks
-
+      let subtaskList;
       if (task.subtasks) {
-        const subtaskList = document.createElement("div");
+        subtaskList = document.createElement("div");
+        subtaskList.textContent="SubTasks: \n"
         subtaskList.classList.add("subtask-list");
         task.subtasks.forEach(function (subtask) {
           const subtaskItem = document.createElement("div");
+          subtaskItem.style.display="flex";
           subtaskItem.classList.add("subtask-item");
 
           const subtaskTextElem = document.createElement("div");
@@ -588,9 +601,13 @@ function renderTasks() {
 
           subtaskItem.appendChild(subtaskCheckbox);
           subtaskItem.appendChild(subtaskTextElem);
+          // subtaskList.textContent="SubTasks: \n"
           subtaskList.appendChild(subtaskItem);
+          
+          subtaskList.style.marginLeft="20px";
+          subtaskList.style.marginBottom="20px";
         });
-        taskItem.appendChild(subtaskList);
+        // taskItem.appendChild(subtaskList);
       }
       var subTaskInput = document.createElement("input");
       subTaskInput.type = "text";
@@ -610,21 +627,37 @@ function renderTasks() {
       });
 
       //display tags
-
+      let tagsContainer;
       if (task.tags && task.tags.length > 0) {
-        const tagsContainer = document.createElement("div");
+         tagsContainer = document.createElement("div");
+         tagsContainer.textContent="TAGS:   ";
+         tagsContainer.style.fontWeight="bold";
+         tagsContainer.style.whiteSpace="pre-wrap";
         tagsContainer.classList.add("tags");
         task.tags.forEach(tag => {
           const tagElem = document.createElement("span");
-          tagElem.textContent = tag;
+          if(tag!=""){
+          tagElem.textContent = `${tag}.     `;
+          }
           tagsContainer.appendChild(tagElem);
         });
         taskItem.appendChild(tagsContainer);
       }
 
+      //display task title
+
       var taskTextElem = document.createElement("div");
       taskTextElem.classList.add("task-text");
-      taskTextElem.textContent = task.id + ". " + `${task.title} - Due: ${task.dueDate} - Category: ${task.category} - Priority: ${task.priority} \n ${task.content}`;
+      taskTextElem.textContent = task.id + ". " + `${task.title}                                                                                                                                                                                                                                                                    DueDate: ${task.dueDate}         Category: ${task.category}       Priority: ${task.priority}\n`;
+
+      //display taskcontent
+      let check_content = document.createElement("div");
+      check_content.style.display="flex";
+      check_content.style.marginBottom="20px";
+      let contentelem = document.createElement("div");
+      // contentelem.style.marginLeft = "20px";
+      contentelem.textContent = task.content;
+
 
       //edit button for each task
 
@@ -658,12 +691,18 @@ function renderTasks() {
 
 
       taskItem.appendChild(taskTextElem);
-
-      taskItem.appendChild(editButton);
-      taskItem.appendChild(checkbox);
-
+      check_content.appendChild(checkbox);
+      check_content.appendChild(contentelem);
+      // taskItem.appendChild(contentelem);
+      // taskItem.appendChild(checkbox);
+      taskItem.appendChild(check_content);
+      taskItem.appendChild(subtaskList);
       taskItem.appendChild(subTaskInput);
       taskItem.appendChild(addSubtaskButton);
+      taskItem.appendChild(editButton);
+      
+
+    
       taskItem.appendChild(deleteButton);
       taskList.appendChild(taskItem);
     });
@@ -679,6 +718,7 @@ deleteButton.addEventListener("click", function () {
   count = 0;
   renderTasks();
   saveNotes();
+  logActivity(`Deleted all tasks`);
 });
 
 //Save button on enter

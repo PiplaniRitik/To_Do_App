@@ -19,12 +19,18 @@
         </h1>
     </span>
         <!-- <h3 style="margin-right: 40px;"></h3> -->
+        <div class="navigate">
         <button class="btn" id="activityLogButton">Activity Log</button>
         <button class="btn" id="homeButton">Home</button>
+      </div>
+        <!-- Search Button -->
+
+        <div class="searching">
         <input type="text" id="searchInput" placeholder="Search tasks">
 
-<!-- Search Button -->
+
 <button class="btn" id="searchButton">Search</button>
+</div>
     </div>
     <div id="logss">
 
@@ -43,6 +49,7 @@
         <input type="text" id="taskContent" placeholder="Enter task content">
         <!-- <input type="text" id="subtaskTitleInput" placeholder="Enter subtask title">
         <button id="addSubtaskButton">Add Subtask</button> -->
+        <div class="attrib">
         <label for="inputTags">Tags</label>
         <input type="text" id="inputTags" placeholder="Enter tags (comma-separated)">
         <label for="dueDate">Due Date</label>
@@ -59,17 +66,20 @@
           <option value="medium">Medium</option>
           <option value="high">High</option>
         </select>
+      </div>
+      <div style="margin-top: 20px;">
         <button class="btn" id="saveButton">Save</button>
         <button class="btn" id="deleteButton">Delete All</button>
       </div>
+      </div>
 
-      <div>
+      <div style="margin-bottom: 10px;">
         <h2>Filters:</h2>
-        <label for="filterDueDate">Due Date Range:</label>
+        <label style="margin-bottom: 10px;" for="filterDueDate">Due Date Range:</label>
         <input type="date" id="filterDueDateStart" placeholder="Start Date">
         <input type="date" id="filterDueDateEnd" placeholder="End Date">
         <br>
-        <label for="filterCategory">Filter by Category:</label>
+        <label style="margin-bottom: 10px;" for="filterCategory">Filter by Category:</label>
         <select id="filterCategory">
           <option value="">All Categories</option>
           <option value="personal">Personal</option>
@@ -77,7 +87,7 @@
           <option value="other">Other</option>
         </select>
         <br>
-        <label for="filterPriority">Filter by Priority:</label>
+        <label style="margin-bottom: 10px;" for="filterPriority">Filter by Priority:</label>
         <select id="filterPriority">
           <option value="">All Priorities</option>
           <option value="low">Low</option>
@@ -86,13 +96,13 @@
         </select>
       </div>
 
-      <div>
-        <label for="showBacklogs">Show Backlogs</label>
+      <div style="margin-bottom: 10px;">
+        <label  for="showBacklogs">Show Backlogs</label>
         <input type="checkbox" id="showBacklogs">
       </div>
 
-      <div>
-        <label for="sortBy">Sort By:</label>
+      <div style="margin-bottom: 10px;">
+        <label  for="sortBy">Sort By:</label>
         <select id="sortBy">
             <option value="">All Options</option>
           <option value="dueDate">Due Date</option>
@@ -106,7 +116,10 @@
 
       <!-- tasklist -->
       
-      <div id="taskList" class="task-list"></div>
+      <div id="taskList" class="task-list">
+        <h1 style="align-self: center;">TASKS</h1>
+      
+      </div>
 
       <!-- tasklist ends -->
     
